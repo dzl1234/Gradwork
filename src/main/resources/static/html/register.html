@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>注册 - 跨语言智能聊天平台</title>
+  <link rel="stylesheet" href="../css/main.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+</head>
+<body>
+<!-- 导航栏 -->
+<nav class="navbar">
+  <div class="navbar-container">
+    <a href="index.html" class="navbar-logo">多语言聊天</a>
+    <ul class="navbar-nav">
+      <li><a href="login.html">登录</a></li>
+      <li><a href="register.html" class="active">注册</a></li>
+    </ul>
+  </div>
+</nav>
+
+<!-- 注册表单 -->
+<div class="container">
+  <div class="form-container">
+    <h2 class="form-title">创建新账号</h2>
+
+    <!-- 错误提示 -->
+    <div id="error-message" class="alert alert-danger" style="display: none;"></div>
+    <!-- 成功提示 -->
+    <div id="success-message" class="alert alert-success" style="display: none;"></div>
+
+    <form id="registerForm">
+      <div class="form-group">
+        <label for="username" class="form-label">用户名</label>
+        <input type="text" id="username" name="username" class="form-input" required>
+      </div>
+
+      <div class="form-group">
+        <label for="email" class="form-label">电子邮箱</label>
+        <input type="email" id="email" name="email" class="form-input" required>
+      </div>
+
+      <div class="form-group">
+        <label for="password" class="form-label">密码</label>
+        <input type="password" id="password" name="password" class="form-input" required>
+      </div>
+
+      <div class="form-group">
+        <label for="confirm-password" class="form-label">确认密码</label>
+        <input type="password" id="confirm-password" name="confirmPassword" class="form-input" required>
+      </div>
+
+      <div class="form-group">
+        <label for="preferred-language" class="form-label">首选语言</label>
+        <select id="preferred-language" name="preferredLanguage" class="form-input">
+          <option value="zh">中文</option>
+          <option value="en">English</option>
+          <option value="ja">日本語</option>
+          <option value="ko">한국어</option>
+          <option value="fr">Français</option>
+          <option value="de">Deutsch</option>
+          <option value="es">Español</option>
+          <option value="ru">Русский</option>
+        </select>
+      </div>
+
+      <button type="submit" class="form-button">
+        <i class="fas fa-user-plus"></i> 注册
+      </button>
+    </form>
+
+    <a href="login.html" class="form-link">已有账号？立即登录</a>
+  </div>
+</div>
+
+<!-- 页脚 -->
+<footer style="margin-top: 80px; padding: 20px; background-color: #34495e; color: white; text-align: center;">
+  <p>© 2025 跨语言智能聊天平台 dzl版权所有</p>
+</footer>
+
+<script src="../js/auth.js"></script>
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    // 检查是否已登录
+    if (localStorage.getItem('token')) {
+      window.location.href = 'chat.html';
+    }
+
+    // 注册表单提交
+    document.getElementById('registerForm').addEventListener('submit', async function(e) {
+      e.preventDefault();
+
+      const username = document.getElementById('username').value;
+      const email = document.getElementById('email').value;
+      const password = document.getElementById('password').value;
+      const confirmPassword = document.getElementById('confirm-password').value;
+      const preferredLanguage = document.getElementById('preferred-language').value;
+
+      // 验证两次密码是否一致
+      if (password !== confirmPassword) {
+        document.getElementById('error-message').textContent = '两次输入的密码不一致';
+        document.getElementById('error-message').style.display = 'block';
+        return;
+      }
+
+      // 显示加载状态
+      const submitButton = this.querySelector('button[type="submit"]');
+      const originalButtonText = submitButton.innerHTML;
+      submitButton.innerHTML = '<i class="fas fa-spinner fa-spin"></i> 注册中...';
+      submitButton.disabled = true;
+
+      try {
+        const result = await register(username, email, password, preferredLanguage);
+
+        if (result.success) {
+          document.getElementById('success-message').textContent = result.message;
+          document.getElementById('success-message').style.display = 'block';
+          document.getElementById('error-message').style.display = 'none';
+
+          // 注册成功后延迟跳转到登录页面
+          setTimeout(() => {
+            window.location.href = 'login.html';
+          }, 2000);
+        } else {
+          document.getElementById('error-message').textContent = result.message;
+          document.getElementById('error-message').style.display = 'block';
+          document.getElementById('success-message').style.display = 'none';
+        }
+      } catch (error) {
+        document.getElementById('error-message').textContent = error.message || '注册失败，请稍后再试';
+        document.getElementById('error-message').style.display = 'block';
+        document.getElementById('success-message').style.display = 'none';
+      } finally {
+        // 恢复按钮状态
+        submitButton.innerHTML = originalButtonText;
+        submitButton.disabled = false;
+      }
+    });
+  });
+</script>
+</body>
+</html>
