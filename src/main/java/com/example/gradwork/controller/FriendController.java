@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -46,32 +47,20 @@ public class FriendController {
         return ResponseEntity.ok(friendsList);
     }
 
-    @PostMapping("/add/{userId}")
-    public ResponseEntity<?> addFriend(@PathVariable Long userId) {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        User currentUser = userService.findByUsername(authentication.getName());
+    @PostMapping("/addByUsername/{username}")
+    public ResponseEntity<?> addFriendByUsername(@PathVariable String username) {
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        User currentUser = userService.findByUsername(auth.getName());
 
-        // 验证用户存在
-        User friend = userService.findById(userId);
-        if (friend == null) {
+        try {
+            User friend = userService.findByUsername(username);
+            userService.addFriend(currentUser.getId(), friend.getId());
+            return ResponseEntity.ok("添加成功");
+        } catch (UsernameNotFoundException e) {
             return ResponseEntity.badRequest().body("用户不存在");
         }
-
-        // 验证不是自己
-        if (currentUser.getId().equals(userId)) {
-            return ResponseEntity.badRequest().body("不能添加自己为好友");
-        }
-
-        // 验证不是已经是好友
-        if (userService.areFriends(currentUser.getId(), userId)) {
-            return ResponseEntity.badRequest().body("已经是好友关系");
-        }
-
-        // 添加好友关系
-        userService.addFriend(currentUser.getId(), userId);
-
-        return ResponseEntity.ok("好友添加成功");
     }
+
 
     @DeleteMapping("/{userId}")
     public ResponseEntity<?> removeFriend(@PathVariable Long userId) {

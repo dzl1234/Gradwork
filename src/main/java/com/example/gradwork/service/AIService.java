@@ -57,6 +57,11 @@ public class AIService {
                     String.class
             );
 
+            // 检查响应是否有效
+            if (response.getStatusCode() != HttpStatus.OK || response.getBody() == null) {
+                throw new ApiException("AI service unavailable");
+            }
+
             // 解析响应
             return parseResponse(response.getBody());
         } catch (Exception e) {
@@ -133,25 +138,16 @@ public class AIService {
     private String parseResponse(String responseJson) {
         try {
             JsonNode rootNode = objectMapper.readTree(responseJson);
-            JsonNode header = rootNode.get("header");
-
-            if (header != null && header.has("code") && header.get("code").asInt() == 0) {
-                JsonNode payload = rootNode.get("payload");
-                if (payload != null && payload.has("choices")) {
-                    JsonNode choices = payload.get("choices");
-                    if (choices.isArray() && choices.size() > 0) {
-                        JsonNode firstChoice = choices.get(0);
-                        if (firstChoice.has("text")) {
-                            return firstChoice.get("text").asText();
-                        }
-                    }
-                }
+            JsonNode payload = rootNode.path("payload");
+            JsonNode choices = payload.path("choices");
+            if (choices.isArray() && choices.size() > 0) {
+                return choices.get(0).path("text").asText();
             }
-
-            // 如果未找到预期的响应结构
-            throw new ApiException("Invalid AI response format: " + responseJson);
+            throw new ApiException("无效的AI响应格式");
         } catch (Exception e) {
-            throw new ApiException("Failed to parse AI response: " + e.getMessage(), e);
+            org.slf4j.Logger logger = org.slf4j.LoggerFactory.getLogger(AIService.class);
+            logger.error("解析失败，原始响应：{}", responseJson); // 添加日志
+            throw new ApiException("AI响应解析失败");
         }
     }
 }

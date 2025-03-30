@@ -8,12 +8,12 @@ async function askAI(question, language, translateResponse = true, targetLanguag
         if (!targetLanguage && getCurrentUser()) {
             targetLanguage = getCurrentUser().preferredLanguage;
         }
-
+        const authToken = localStorage.getItem('authToken');
         const response = await fetch('http://localhost:8080/api/ai/ask', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
-                ...getAuthHeader()
+                'Authorization': `Bearer ${authToken}`
             },
             body: JSON.stringify({
                 question,
@@ -28,7 +28,14 @@ async function askAI(question, language, translateResponse = true, targetLanguag
             throw new Error(errorData.message || 'AI服务请求失败');
         }
 
-        return await response.json();
+        let data;
+        try {
+            data = await response.json();
+        } catch (error) {
+            console.error('JSON解析失败:', await response.text());
+            throw new Error('AI响应格式错误');
+        }
+        return data;
     } catch (error) {
         console.error('AI请求错误:', error);
         return { success: false, message: error.message };

@@ -78,7 +78,7 @@ function logout() {
     currentUser = null;
     localStorage.removeItem('authToken');
     localStorage.removeItem('currentUser');
-    window.location.href = '../html/login.html';
+    window.location.href = '../../templates/login.html';
 }
 
 // 获取当前用户信息
@@ -109,7 +109,7 @@ document.addEventListener('DOMContentLoaded', function() {
             const result = await login(username, password);
 
             if (result.success) {
-                window.location.href = '../html/chat.html';
+                window.location.href = '../../templates/chat.html';
             } else {
                 alert(result.message);
             }
@@ -130,7 +130,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
             if (result.success) {
                 alert('注册成功！请登录');
-                window.location.href = '../html/login.html';
+                window.location.href = '../../templates/login.html';
             } else {
                 alert(result.message);
             }

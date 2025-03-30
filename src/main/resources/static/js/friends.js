@@ -27,7 +27,7 @@ async function loadFriendsList() {
 // 添加好友
 async function addFriend(username) {
     try {
-        const response = await fetch('http://localhost:8080/api/friends/add', {
+        const response = await fetch(`http://localhost:8080/api/friends/addByUsername/${encodeURIComponent(username)}`,{
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
@@ -47,6 +47,62 @@ async function addFriend(username) {
         return { success: false, message: error.message };
     }
 }
+
+// 显示添加好友模态框
+function showAddFriendModal() {
+    const modal = document.getElementById('addFriendModal');
+    if (modal) {
+        modal.style.display = 'block';
+    }
+}
+
+// 关闭添加好友模态框
+function closeAddFriendModal() {
+    const modal = document.getElementById('addFriendModal');
+    if (modal) {
+        modal.style.display = 'none';
+    }
+}
+
+// 初始化添加好友功能
+document.addEventListener('DOMContentLoaded', function() {
+    // 打开添加好友模态框按钮
+    const addFriendBtn = document.getElementById('addFriendBtn');
+    if (addFriendBtn) {
+        addFriendBtn.addEventListener('click', showAddFriendModal);
+    }
+
+    // 关闭按钮
+    const closeAddFriendModalBtn = document.querySelector('.close');
+    if (closeAddFriendModalBtn) {
+        closeAddFriendModalBtn.addEventListener('click', closeAddFriendModal);
+    }
+
+    // 添加好友按钮
+    const confirmAddFriendBtn = document.getElementById('confirmAddFriendBtn');
+    if (confirmAddFriendBtn) {
+        confirmAddFriendBtn.addEventListener('click', async function() {
+            const addFriendInput = document.getElementById('addFriendInput');
+            const username = addFriendInput.value.trim();
+
+            if (username === '') {
+                showNotification('提示', '请输入好友用户名', 'info');
+                return;
+            }
+
+            const result = await addFriend(username);
+
+            if (result.success) {
+                showNotification('成功', result.message, 'success');
+                addFriendInput.value = '';
+                closeAddFriendModal();
+                loadFriendsList();
+            } else {
+                showNotification('错误', result.message, 'error');
+            }
+        });
+    }
+});
 
 // 删除好友
 async function removeFriend(friendId) {

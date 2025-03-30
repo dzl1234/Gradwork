@@ -14,11 +14,11 @@ function connectWebSocket() {
         stompClient.disconnect();
     }
 
-    const socket = new SockJS('/ws');
+    const socket = new SockJS('http://localhost:8080/api/ws'); // 完整URL包含API路径
     stompClient = Stomp.over(socket);
 
     const headers = {
-        'Authorization': localStorage.getItem('authToken')
+        'Authorization': 'Bearer ' + localStorage.getItem('authToken')
     };
 
     stompClient.connect(headers, function() {
