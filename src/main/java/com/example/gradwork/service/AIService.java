@@ -110,8 +110,8 @@ public class AIService {
 
         // 组织鉴权签名
         String signatureOrigin = String.format("host: %s\ndate: %s\nPOST %s HTTP/1.1", host, date, path);
-        Mac mac = Mac.getInstance("hmacsha256");
-        SecretKeySpec spec = new SecretKeySpec(apiSecret.getBytes(StandardCharsets.UTF_8), "hmacsha256");
+        Mac mac = Mac.getInstance("HmacSHA256");
+        SecretKeySpec spec = new SecretKeySpec(apiSecret.getBytes(StandardCharsets.UTF_8), "HmacSHA256");
         mac.init(spec);
         byte[] hexDigits = mac.doFinal(signatureOrigin.getBytes(StandardCharsets.UTF_8));
         String signature = Base64.getEncoder().encodeToString(hexDigits);

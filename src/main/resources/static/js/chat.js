@@ -14,7 +14,7 @@ function connectWebSocket() {
         stompClient.disconnect();
     }
 
-    const socket = new SockJS('http://localhost:8080/api/ws'); // 完整URL包含API路径
+    const socket = new SockJS('http://localhost:8080/ws'); // 完整URL包含API路径
     stompClient = Stomp.over(socket);
 
     const headers = {
@@ -24,13 +24,10 @@ function connectWebSocket() {
     stompClient.connect(headers, function() {
         // 订阅个人消息频道
         stompClient.subscribe('/user/queue/messages', onMessageReceived);
-
         // 订阅用户状态变更
         stompClient.subscribe('/topic/status', onStatusChange);
-
         // 向服务器发送上线状态
         sendStatusUpdate(true);
-
         // 加载好友列表
         loadFriendsList();
     }, onError);

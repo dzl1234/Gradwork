@@ -50,7 +50,7 @@ public class AuthController {
         User user = userService.findByUsername(loginRequest.getUsername());
 
         Map<String, Object> response = new HashMap<>();
-        response.put("token", token);
+        response.put("authToken", token);
         response.put("userId", user.getId());
         response.put("username", user.getUsername());
 

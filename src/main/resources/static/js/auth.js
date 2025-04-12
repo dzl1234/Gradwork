@@ -12,7 +12,7 @@ function isLoggedIn() {
 }
 
 // 注册功能
-async function register(username,email,password,preferredLanguage) {
+async function register(username, email, password, preferredLanguage) {
     try {
         const response = await fetch('http://localhost:8080/api/auth/register', {
             method: 'POST',
@@ -33,42 +33,53 @@ async function register(username,email,password,preferredLanguage) {
         }
 
         const data = await response.text();
-        return { success: true, message: data || '注册成功！' };
+        return {success: true, message: data || '注册成功！'};
     } catch (error) {
         console.error('注册错误:', error);
-        return { success: false, message: error.message };
+        return {success: false, message: error.message};
     }
 }
 
 // 登录功能
 async function login(username, password) {
+    let loginRequest= {
+        username: username,
+        password: password
+    }
     try {
+        console.log("login");
+
         const response = await fetch('http://localhost:8080/api/auth/login', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
             },
-            body: JSON.stringify({ username, password })
+            body:loginRequest,
+            credentials: 'include' // 添加此行
         });
 
-        if (!response.ok) {
-            const errorText = await response.text();
-            throw new Error(errorText || '登录失败');
-        }
-
-        const data = await response.json();
-
-        // 登录成功后存储令牌和用户信息
-        authToken = data.token;
-        currentUser = { id: data.userId, username: data.username };
-        localStorage.setItem('authToken', authToken);
-        localStorage.setItem('currentUser', JSON.stringify(currentUser));
-
-        return { success: true, user: currentUser };
-    } catch (error) {
-        console.error('登录错误:', error);
-        return { success: false, message: error.message };
+    if (!response.ok) {
+        const errorText = await response.text();
+        throw new Error(errorText || '登录失败');
     }
+
+    const data = await response.json();
+
+    // 登录成功后存储令牌和用户信息
+    authToken = data.token;
+    currentUser = {id: data.userId, username: data.username};
+    localStorage.setItem('authToken', authToken);
+    localStorage.setItem('currentUser', JSON.stringify(currentUser));
+
+    return {success: true, user: currentUser};
+}
+
+catch
+(error)
+{
+    console.error('登录错误:', error);
+    return {success: false, message: error.message};
+}
 }
 
 // 注销功能 - 修改为创建新的访客身份而非跳转到登录页面
@@ -88,11 +99,11 @@ function getCurrentUser() {
 
 // 为API请求添加授权头
 function getAuthHeader() {
-    return { 'Authorization': `Bearer ${authToken}` };
+    return {'Authorization': `Bearer ${authToken}`};
 }
 
 // 页面加载时检查登录状态
-document.addEventListener('DOMContentLoaded', function() {
+document.addEventListener('DOMContentLoaded', function () {
     const loginForm = document.getElementById('loginForm');
     const registerForm = document.getElementById('registerForm');
     const logoutBtn = document.getElementById('logoutBtn');
@@ -100,7 +111,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // 登录表单提交
     if (loginForm) {
-        loginForm.addEventListener('submit', async function(e) {
+        loginForm.addEventListener('submit', async function (e) {
             e.preventDefault();
 
             const username = document.getElementById('username').value;
@@ -118,7 +129,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // 注册表单提交
     if (registerForm) {
-        registerForm.addEventListener('submit', async function(e) {
+        registerForm.addEventListener('submit', async function (e) {
             e.preventDefault();
 
             const username = document.getElementById('username').value;
@@ -126,7 +137,7 @@ document.addEventListener('DOMContentLoaded', function() {
             const password = document.getElementById('password').value;
             const preferredLanguage = document.getElementById('preferred-language').value;
 
-            const result = await register(username,email,password,preferredLanguage);
+            const result = await register(username, email, password, preferredLanguage);
 
             if (result.success) {
                 alert('注册成功！请登录');
@@ -139,7 +150,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // 注销按钮
     if (logoutBtn) {
-        logoutBtn.addEventListener('click', function() {
+        logoutBtn.addEventListener('click', function () {
             logout();
         });
     }
