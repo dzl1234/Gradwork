@@ -33,8 +33,9 @@ public class AuthController {
     private UserService userService;
 
     @PostMapping("/login")
-    public ResponseEntity<?> login(@Valid @RequestBody LoginRequest loginRequest) {
-        // 验证用户名和密码
+    public ResponseEntity<?> login(@RequestBody RegisterRequest loginRequest) {
+        System.out.println(loginRequest);
+         //验证用户名和密码
         Authentication authentication = authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(
                         loginRequest.getUsername(),
