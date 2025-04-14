@@ -41,35 +41,40 @@ async function register(username, email, password, preferredLanguage) {
 }
 
 // 登录功能
- function login(username, password) {
+async function login(username, password) {
     try {
-        const response = fetch('http://127.0.0.1:8080/api/auth/login', {
+        const response = await fetch('http://localhost:8080/api/auth/login', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
             },
-            body:JSON.stringify(loginRequest={username: username, password: password}),
-            mode: 'no-cors',
-            credentials: 'include' // 添加此行
+            body: JSON.stringify({
+                username: username,
+                password: password
+            })
         });
-    // if (!response.ok) {
-    //     const errorText =  response.text();
-    //     throw new Error(errorText || '登录失败');
-    // }
-        console.log(response);
 
-    // const data =  response.json();
+        if (!response.ok) {
+            const errorData = await response.json();
+            throw new Error(errorData.message || '登录失败');
+        }
 
-    // 登录成功后存储令牌和用户信息
-    // authToken = data.token;
-    // currentUser = {id: data.userId, username: data.username};
-    // localStorage.setItem('authToken', authToken);
-    // localStorage.setItem('currentUser', JSON.stringify(currentUser));
-    //
-    // return {success: true, user: currentUser};
-    } catch (error){
-    console.error('登录错误:', error);
-    return {success: false, message: error.message};
+        const data = await response.json();
+
+        // 存储token和用户信息
+        authToken = data.authToken;
+        currentUser = {
+            id: data.userId,
+            username: data.username,
+            preferredLanguage: data.preferredLanguage
+        };
+        localStorage.setItem('authToken', authToken);
+        localStorage.setItem('currentUser', JSON.stringify(currentUser));
+
+        return { success: true, user: currentUser };
+    } catch (error) {
+        console.error('登录错误:', error);
+        return { success: false, message: error.message };
     }
 }
 
