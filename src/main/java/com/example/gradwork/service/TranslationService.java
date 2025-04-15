@@ -15,6 +15,7 @@ import org.springframework.web.client.RestTemplate;
 import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Random;
 
@@ -82,9 +83,11 @@ public class TranslationService {
             Map<String, Object> responseBody = response.getBody();
             if (responseBody != null && responseBody.containsKey("trans_result")) {
                 Object transResult = responseBody.get("trans_result");
-                if (transResult instanceof Iterable) {
-                    for (Object result : (Iterable<?>) transResult) {
+                if (transResult instanceof List<?>) {
+                    List<?> results = (List<?>) transResult;
+                    for (Object result : results) {
                         if (result instanceof Map) {
+                            @SuppressWarnings("unchecked")  // 明确抑制警告
                             Map<String, String> resultMap = (Map<String, String>) result;
                             if (resultMap.containsKey("dst")) {
                                 return resultMap.get("dst");

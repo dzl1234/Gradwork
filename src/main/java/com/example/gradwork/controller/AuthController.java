@@ -75,7 +75,9 @@ public class AuthController {
 
         userService.save(user);
 
-        return ResponseEntity.status(HttpStatus.CREATED).body("用户注册成功!");
+        Map<String, String> successResponse = new HashMap<>();
+        successResponse.put("message", "用户注册成功!");
+        return ResponseEntity.status(HttpStatus.CREATED).body(successResponse);
     }
 
     @GetMapping("/me")

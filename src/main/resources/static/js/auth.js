@@ -14,7 +14,7 @@ function isLoggedIn() {
 // 注册功能
 async function register(username, email, password, preferredLanguage) {
     try {
-        const response = await fetch('http://localhost:8080/api/auth/register', {
+        const response = await fetch('/api/auth/register', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
@@ -43,7 +43,7 @@ async function register(username, email, password, preferredLanguage) {
 // 登录功能
 async function login(username, password) {
     try {
-        const response = await fetch('http://localhost:8080/api/auth/login', {
+        const response = await fetch('/api/auth/login', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
@@ -86,7 +86,7 @@ function logout() {
     currentUser = null;
     localStorage.removeItem('authToken');
     localStorage.removeItem('currentUser');
-    window.location.href = '../templates/login.html';
+    window.location.href = '../html/login.html';
 }
 
 // 获取当前用户信息

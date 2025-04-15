@@ -36,16 +36,21 @@ public class SecurityConfig {
      */
     @Bean
     public SecurityFilterChain configure(HttpSecurity http) throws Exception {
-        http.csrf(csrf -> csrf.disable())
-                .cors(cors -> cors.configurationSource(corsConfigurationSource()))
+        http
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
-                        .requestMatchers("/api/auth/**").permitAll()
+                        // 允许匿名访问注册和登录接口
+                        .requestMatchers("/api/auth/register", "/api/auth/login").permitAll()
+                        // 允许静态资源匿名访问
+                        .requestMatchers("/html/**", "/css/**", "/js/**", "/favicon.ico").permitAll()
+                        // 其他请求需要认证
                         .anyRequest().authenticated()
                 )
+                // 禁用 CSRF
+                .csrf(csrf -> csrf.disable())
+                // 添加 JWT 过滤器
+                .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class)
+                // 使用无状态会话（JWT 不需要 session）
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS));
-
-        http.addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
         return http.build();
     }
 

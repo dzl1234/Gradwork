@@ -5,7 +5,7 @@
 // 加载好友列表
 async function loadFriendsList() {
     try {
-        const response = await fetch('http://localhost:8080/api/friends', {
+        const response = await fetch('/api/friends', {
             headers: {
                 ...getAuthHeader()
             }
@@ -27,7 +27,7 @@ async function loadFriendsList() {
 // 添加好友
 async function addFriend(username) {
     try {
-        const response = await fetch(`http://localhost:8080/api/friends/addByUsername/${encodeURIComponent(username)}`,{
+        const response = await fetch(`/api/friends/addByUsername/${encodeURIComponent(username)}`,{
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
@@ -107,7 +107,7 @@ document.addEventListener('DOMContentLoaded', function() {
 // 删除好友
 async function removeFriend(friendId) {
     try {
-        const response = await fetch(`http://localhost:8080/api/friends/${friendId}`, {
+        const response = await fetch(`/api/friends/${friendId}`, {
             method: 'DELETE',
             headers: {
                 ...getAuthHeader()
@@ -129,7 +129,7 @@ async function removeFriend(friendId) {
 // 搜索用户
 async function searchUsers(keyword) {
     try {
-        const response = await fetch(`http://localhost:8080/api/users/search?keyword=${encodeURIComponent(keyword)}`, {
+        const response = await fetch(`/api/users/search?keyword=${encodeURIComponent(keyword)}`, {
             headers: {
                 ...getAuthHeader()
             }

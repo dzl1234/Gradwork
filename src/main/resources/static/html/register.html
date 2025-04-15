@@ -4,17 +4,18 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>注册 - 跨语言智能聊天平台</title>
-  <link rel="stylesheet" href="../static/css/main.css">
+  <link rel="stylesheet" href="/css/main.css">
+  <link rel="icon" type="image/x-icon" href="/favicon.ico">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
 </head>
 <body>
 <!-- 导航栏 -->
 <nav class="navbar">
   <div class="navbar-container">
-    <a href="index.html" class="navbar-logo">多语言聊天</a>
+    <a href="/html/index.html" class="navbar-logo">多语言聊天</a>
     <ul class="navbar-nav">
-      <li><a href="login.html">登录</a></li>
-      <li><a href="register.html" class="active">注册</a></li>
+      <li><a href="/html/login.html">登录</a></li>
+      <li><a href="/html/register.html" class="active">注册</a></li>
     </ul>
   </div>
 </nav>
@@ -69,7 +70,7 @@
       </button>
     </form>
 
-    <a href="login.html" class="form-link">已有账号？立即登录</a>
+    <a href="/html/login.html" class="form-link">已有账号？立即登录</a>
   </div>
 </div>
 
@@ -78,12 +79,12 @@
   <p>© 2025 跨语言智能聊天平台 dzl版权所有</p>
 </footer>
 
-<script src="../static/js/auth.js"></script>
+<script src="/js/auth.js"></script>
 <script>
   document.addEventListener('DOMContentLoaded', function() {
     // 检查是否已登录
     if (localStorage.getItem('authToken')) {
-      window.location.href = 'chat.html';
+      window.location.href = '/html/chat.html';
     }
 
     // 注册表单提交
@@ -119,7 +120,7 @@
 
           // 注册成功后延迟跳转到登录页面
           setTimeout(() => {
-            window.location.href = 'login.html';
+            window.location.href = '/html/login.html';
           }, 2000);
         } else {
           document.getElementById('error-message').textContent = result.message;

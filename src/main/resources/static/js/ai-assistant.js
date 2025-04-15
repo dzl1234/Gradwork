@@ -9,7 +9,7 @@ async function askAI(question, language, translateResponse = true, targetLanguag
             targetLanguage = getCurrentUser().preferredLanguage;
         }
         const authToken = localStorage.getItem('authToken');
-        const response = await fetch('http://localhost:8080/api/ai/ask', {
+        const response = await fetch('/api/ai/ask', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',

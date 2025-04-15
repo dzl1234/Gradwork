@@ -40,8 +40,12 @@ public class JwtTokenUtil {
     }
 
     // 解析JWT获取所有声明
-    private Claims getAllClaimsFromToken(String token) {
-        return Jwts.parser().setSigningKey(secret).parseClaimsJws(token).getBody();
+    public Claims getAllClaimsFromToken(String token) {
+        return Jwts.parserBuilder()          // 使用 parserBuilder
+                .setSigningKey(secret)
+                .build()                     // 构建解析器
+                .parseClaimsJws(token)
+                .getBody();
     }
 
     // 检查token是否过期

@@ -14,7 +14,7 @@ function connectWebSocket() {
         stompClient.disconnect();
     }
 
-    const socket = new SockJS('http://localhost:8080/ws'); // 完整URL包含API路径
+    const socket = new SockJS('/ws'); // 完整URL包含API路径
     stompClient = Stomp.over(socket);
 
     const headers = {
@@ -46,7 +46,7 @@ function sendStatusUpdate(online) {
 // 加载好友列表
 async function loadFriendsList() {
     try {
-        const response = await fetch('http://localhost:8080/api/friends', {
+        const response = await fetch('/api/friends', {
             headers: {
                 ...getAuthHeader()
             }
@@ -108,7 +108,7 @@ function selectUser(user) {
 // 加载聊天历史
 async function loadChatHistory(userId) {
     try {
-        const response = await fetch(`http://localhost:8080/api/chat/history/${userId}`, {
+        const response = await fetch(`/api/chat/history/${userId}`, {
             headers: {
                 ...getAuthHeader()
             }
@@ -203,7 +203,7 @@ function sendMessage() {
         targetLanguage: selectedUser.preferredLanguage
     };
 
-    fetch('http://localhost:8080/api/chat/send', {
+    fetch('/api/chat/send', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
@@ -304,7 +304,7 @@ async function addFriend() {
     }
 
     try {
-        const response = await fetch('http://localhost:8080/api/friends/add', {
+        const response = await fetch('/api/friends/add', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
